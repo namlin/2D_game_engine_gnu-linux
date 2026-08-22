@@ -26,3 +26,11 @@ std::vector<Entity> System::get_entities(void) const {
 std::bitset<MAX_COMPONENTS>& System::get_component_signature(void) {
   return this->signature;
 }
+
+Registry::Registry(void) {
+  std::cout << "[Registry] Constructor Executing.\n";
+}
+
+Registry::~Registry(void) {
+  std::cout << "[Registry] Desstructor Executing.\n";
+}
