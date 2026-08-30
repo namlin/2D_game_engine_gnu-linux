@@ -42,16 +42,16 @@ class Registry {
 
   // System Management:
   template <typename TSystem, typename... TArgs>
-  void add_system(Entity entity, TArgs&&... args);
+  void add_system(TArgs&&... args);
 
   template <typename TSystem>
-  void remove_system(Entity entity);
+  void remove_system(void);
 
   template <typename TSystem>
-  bool has_system(Entity entity) const;
+  bool has_system(void) const;
 
   template <typename TSystem>
-  IComponent& get_system(Entity entity);
+  IComponent& get_system(void) const;
 
   // Add and remove entities to systems:
   void add_entity_to_systems(Entity entity);
@@ -117,7 +117,7 @@ void Registry::remove_component(Entity entity) {
 }
 
 template <typename TSystem>
-bool Registry::has_system(Entity entity) const {
+bool Registry::has_component(Entity entity) const {
   const size_t component_id = Component<IComponent>::get_id();
   const size_t entity_id = entity.get_id();
 
@@ -129,10 +129,33 @@ TComponent& Registry::get_component(Entity entity) {
   const size_t component_id = Component<TComponent>::get_id();
   const size_t entity_id = entity.get_id();
 
-  // Use C++ static_cast for raw pointers
   auto* component_pool = static_cast<Pool<TComponent>*>(this->entries[component_id]);
 
   return component_pool->get(entity_id);
+}
+
+// System Management:
+template <typename TSystem, typename... TArgs>
+void Registry::add_system(TArgs&&... args) {
+  TSystem* system = new TSystem(std::forward<TArgs>(args)...);
+  this->systems.insert(std::make_pair(std::type_index(typeid(TSystem)), system));
+}
+
+template <typename TSystem>
+void Registry::remove_system(void) {
+  auto system = this->systems.find(std::type_index(typeid(TSystem)));
+  this->systems.erase(system);
+}
+
+template <typename TSystem>
+bool Registry::has_system(void) const {
+  return this->systems.find(std::type_index(typeid(TSystem))) != this->systems.end();
+}
+
+template <typename TSystem>
+IComponent& Registry::get_system(void) const {
+  auto system = this->systems.find(std::type_index(typeid(TSystem)));
+  return *(static_cast<TSystem>(system->second));
 }
 
 #endif  // REGISTRY_H
