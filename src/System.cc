@@ -1,12 +1,4 @@
-#include <algorithm>
-
-#include "../include/ECS.h"
-
-size_t IComponent::next_id = 0;
-
-size_t Entity::get_id(void) const {
-  return this->id;
-}
+#include "../include/System.h"
 
 void System::add_entity(Entity entity) {
   this->entities.push_back(entity);
@@ -25,12 +17,4 @@ std::vector<Entity> System::get_entities(void) const {
 
 std::bitset<MAX_COMPONENTS>& System::get_component_signature(void) {
   return this->signature;
-}
-
-Registry::Registry(void) {
-  std::cout << "[Registry] Constructor Executing.\n";
-}
-
-Registry::~Registry(void) {
-  std::cout << "[Registry] Desstructor Executing.\n";
 }
