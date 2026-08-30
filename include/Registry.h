@@ -110,7 +110,29 @@ void Registry::add_component(Entity entity, TArgs&&... args) {
 
 template <typename TComponent>
 void Registry::remove_component(Entity entity) {
-  //
+  const size_t component_id = Component<TComponent>::get_id();
+  const size_t entity_id = entity.get_id();
+
+  this->entity_component_signatures[entity_id].set(component_id, false);
+}
+
+template <typename TSystem>
+bool Registry::has_system(Entity entity) const {
+  const size_t component_id = Component<IComponent>::get_id();
+  const size_t entity_id = entity.get_id();
+
+  return this->entity_component_signatures[entity_id].test(component_id);
+}
+
+template <typename TComponent>
+TComponent& Registry::get_component(Entity entity) {
+  const size_t component_id = Component<TComponent>::get_id();
+  const size_t entity_id = entity.get_id();
+
+  // Use C++ static_cast for raw pointers
+  auto* component_pool = static_cast<Pool<TComponent>*>(this->entries[component_id]);
+
+  return component_pool->get(entity_id);
 }
 
 #endif  // REGISTRY_H

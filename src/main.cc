@@ -16,7 +16,7 @@ int main(int argc, char* argv[]) {
   game->Run();
   game->Destroy();
 
-  std::cout << "Ciao!\n\n";
+  std::cout << "\nCiao!\n\n";
 
   return 0;
 }

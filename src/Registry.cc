@@ -6,6 +6,12 @@ Registry::Registry(void) {
 
 Registry::~Registry(void) {
   std::cout << "[Registry] Destructor Executing.\n";  // TEST
+
+  for (IPool* pool : this->entries) {
+    delete pool;  // Free each dynamic Pool instance safely.
+  }
+
+  this->entries.clear();
 }
 
 Entity Registry::create_entity(void) {
