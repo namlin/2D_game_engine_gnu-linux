@@ -67,4 +67,50 @@ class Registry {
   std::set<Entity> entities_to_remove;
 };
 
+// Templates implementations:
+template <typename TComponent, typename... TArgs>
+void Registry::add_component(Entity entity, TArgs&&... args) {
+  const size_t component_id = Component<TComponent>::get_id();
+  const size_t entity_id = entity.get_id();
+
+  // Resize the pool container if component_id is out of bounds before accessing
+  // entries[component_id]:
+  if (component_id >= this->entries.size()) {
+    this->entries.resize(component_id + 10, nullptr);
+  }
+
+  // Instantiate pool if it doesn't exist yet:
+  if (!this->entries[component_id]) {
+    Pool<TComponent>* new_component = new Pool<TComponent>();
+
+    if (new_component == nullptr) {
+      std::cerr << "[Registry] ERROR: No dynamic memory was allocated for 'new_component' pointer.\n";
+      std::exit(EXIT_FAILURE);
+    }
+
+    this->entries[component_id] = new_component;
+  }
+
+  // Resize the entity signatures container if needed;
+  if (entity_id >= this->entity_component_signatures.size()) {
+    this->entity_component_signatures.resize(entity_id + 100);
+  }
+
+  TComponent component(std::forward<TArgs>(args)...);
+
+  // Cast generic pool to specific component pool type and add component:
+  Pool<TComponent>* pool = static_cast<Pool<TComponent>*>(this->entries[component_id]);
+
+  // Assuming your Pool class has a set() or add() method:
+  pool->set(entity_id, component);
+
+  // Set the bitmask bit in entity_component_signatures vector:
+  this->entity_component_signatures[entity_id].set(component_id);
+}
+
+template <typename TComponent>
+void Registry::remove_component(Entity entity) {
+  //
+}
+
 #endif  // REGISTRY_H

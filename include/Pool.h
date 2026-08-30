@@ -15,8 +15,8 @@ class Pool : public IPool {
   std::vector<TComponent> data;
 
  public:
-  Pool(size_t size = 0) {
-    this->data.resize(size);
+  Pool(void) {
+    this->data.resize(POOL_SIZE);
   }
 
   virtual ~Pool(void) = default;
