@@ -5,7 +5,7 @@
 
 struct IComponent {
  protected:
-  static size_t next_id;
+  inline static size_t next_id = 0;
 };
 
 template <typename TComponent>
@@ -16,4 +16,4 @@ class Component : IComponent {
   }
 };
 
-# endif  // COMPONENT_H
+#endif  // COMPONENT_H

@@ -10,11 +10,13 @@
 #include <unordered_map>
 #include <vector>
 
-#include "../include/Constants.h"
-#include "../include/Component.h"
-#include "../include/Entity.h"
-#include "../include/Pool.h"
-#include "../include/System.h"
+#include "Component.h"
+#include "Constants.h"
+#include "Entity.h"
+#include "Pool.h"
+// #include "System.h"
+
+class System;  // Forward declaration;
 
 class Registry {
  public:

@@ -2,10 +2,19 @@
 
 Game::Game(void) {
   std::cout << "[GAME] Constructor Executing.\n";
+
+  this->registry = new Registry();
+
+  if (this->registry == nullptr) {
+    std::cerr << "[GAME] ERROR: No dynamic memory was allocated for the registry pointer.\n";
+    std::exit(EXIT_FAILURE);
+  }
 }
 
 Game::~Game(void) {
   std::cout << "[GAME] Destructor Executing.\n";
+  // this->registry.reset();
+  delete this->registry;
 }
 
 Game* Game::get_instance(void) {
@@ -60,6 +69,11 @@ void Game::Init(void) {
     50,  // Width.
     50  // Height.
   };
+}
+
+void Game::Setup(void) {
+  Entity entity = this->registry->create_entity();
+  entity.add_component<TransformComponent>(glm::vec2(100.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
 }
 
 void Game::ProcessInput(void) {

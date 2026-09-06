@@ -31,6 +31,7 @@ Entity Registry::create_entity(void) {
   }
 
   Entity entity(id);
+  entity.registry = this;
   this->entities_to_add.insert(entity);
 
   std::cout << "[Registry] New entity created with id " << id << ".\n";  // TEST

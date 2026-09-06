@@ -8,6 +8,14 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 
+#include "../include/Component.h"
+#include "../include/Entity.h"
+#include "../include/Registry.h"
+#include "../include/System.h"
+
+// Components:
+#include "../include/TransformComponent.h"
+
 class Game {
  private:
   // --- Attributes ---
@@ -16,11 +24,13 @@ class Game {
   SDL_Window* window = nullptr;
   uint16_t window_width = 800;
   uint16_t window_height = 600;
-  const char* window_title = "Game Engine";
+  const char* window_title = "2D Game Engine";
 
   SDL_Renderer* renderer = nullptr;
   SDL_Rect rect_1;
   bool isRunning = false;
+
+  Registry* registry = nullptr;
 
   // --- Singleton Encapsulation ---
   Game(void);
@@ -31,6 +41,7 @@ class Game {
   Game& operator=(const Game&) = delete;
 
   // --- Private Methods ---
+  void Setup(void);
   void ProcessInput(void);
   void Update(void);
   void Render(void);
