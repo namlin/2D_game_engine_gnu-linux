@@ -58,11 +58,14 @@ class Registry {
   void remove_entity_from_systems(Entity entity);
 
  private:
+  // Attributes:
   size_t total_entities = 0;
   std::vector<IPool*> entries;
   std::vector<std::bitset<MAX_COMPONENTS>> entity_component_signatures;
   std::unordered_map<std::type_index, System*> systems;
+  std::deque<size_t> free_IDs;
 
+  // Functions:
   std::set<Entity> entities_to_add;
   std::set<Entity> entities_to_remove;
 };

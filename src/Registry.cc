@@ -15,11 +15,19 @@ Registry::~Registry(void) {
 }
 
 Entity Registry::create_entity(void) {
-  // TODO: Reuse the ID of destroyed entities.
-  size_t id = this->total_entities++;
+  size_t id = 0;
 
-  if (id >= this->entity_component_signatures.size()) {
-    this->entity_component_signatures.resize(id + EXTRA_SIZE);  // TEST
+  if (this->free_IDs.empty()) {
+    id = this->total_entities++;
+
+    if (id >= this->entity_component_signatures.size()) {
+      this->entity_component_signatures.resize(id + EXTRA_SIZE);  // TEST
+    }
+  }
+
+  else {
+    id = this->free_IDs.front();
+    this->free_IDs.pop_front();
   }
 
   Entity entity(id);
@@ -69,7 +77,7 @@ void Registry::update(void) {
     // Set the whole bitset to 0:
     this->entity_component_signatures[entity.get_id()].reset();
 
-    // TODO: add an ID to the deque of free ID's.
+    this->free_IDs.push_back(entity.get_id());
   }
 
   this->entities_to_remove.clear();
