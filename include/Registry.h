@@ -14,9 +14,9 @@
 #include "Constants.h"
 #include "Entity.h"
 #include "Pool.h"
-// #include "System.h"
+#include "System.h"
 
-class System;  // Forward declaration;
+class System;
 
 class Registry {
  public:
@@ -53,63 +53,44 @@ class Registry {
   bool has_system(void) const;
 
   template <typename TSystem>
-  IComponent& get_system(void) const;
+  TSystem& get_system(void) const;
 
-  // Add and remove entities to systems:
   void add_entity_to_systems(Entity entity);
   void remove_entity_from_systems(Entity entity);
 
  private:
-  // Attributes:
   size_t total_entities = 0;
   std::vector<IPool*> entries;
   std::vector<std::bitset<MAX_COMPONENTS>> entity_component_signatures;
   std::unordered_map<std::type_index, System*> systems;
   std::deque<size_t> free_IDs;
 
-  // Functions:
   std::set<Entity> entities_to_add;
   std::set<Entity> entities_to_remove;
 };
 
-// Templates implementations:
 template <typename TComponent, typename... TArgs>
 void Registry::add_component(Entity entity, TArgs&&... args) {
   const size_t component_id = Component<TComponent>::get_id();
   const size_t entity_id = entity.get_id();
 
-  // Resize the pool container if component_id is out of bounds before accessing
-  // entries[component_id]:
   if (component_id >= this->entries.size()) {
     this->entries.resize(component_id + 10, nullptr);
   }
 
-  // Instantiate pool if it doesn't exist yet:
   if (!this->entries[component_id]) {
-    Pool<TComponent>* new_component = new Pool<TComponent>();
-
-    if (new_component == nullptr) {
-      std::cerr << "[Registry] ERROR: No dynamic memory was allocated for 'new_component' pointer.\n";
-      std::exit(EXIT_FAILURE);
-    }
-
+    auto* new_component = new Pool<TComponent>();
     this->entries[component_id] = new_component;
   }
 
-  // Resize the entity signatures container if needed;
   if (entity_id >= this->entity_component_signatures.size()) {
     this->entity_component_signatures.resize(entity_id + 100);
   }
 
   TComponent component(std::forward<TArgs>(args)...);
 
-  // Cast generic pool to specific component pool type and add component:
-  Pool<TComponent>* pool = static_cast<Pool<TComponent>*>(this->entries[component_id]);
-
-  // Assuming your Pool class has a set() or add() method:
+  auto* pool = static_cast<Pool<TComponent>*>(this->entries[component_id]);
   pool->set(entity_id, component);
-
-  // Set the bitmask bit in entity_component_signatures vector:
   this->entity_component_signatures[entity_id].set(component_id);
 }
 
@@ -118,13 +99,19 @@ void Registry::remove_component(Entity entity) {
   const size_t component_id = Component<TComponent>::get_id();
   const size_t entity_id = entity.get_id();
 
-  this->entity_component_signatures[entity_id].set(component_id, false);
+  if (entity_id < this->entity_component_signatures.size()) {
+    this->entity_component_signatures[entity_id].set(component_id, false);
+  }
 }
 
-template <typename TSystem>
+template <typename TComponent>
 bool Registry::has_component(Entity entity) const {
-  const size_t component_id = Component<IComponent>::get_id();
+  const size_t component_id = Component<TComponent>::get_id();
   const size_t entity_id = entity.get_id();
+
+  if (entity_id >= this->entity_component_signatures.size()) {
+    return false;
+  }
 
   return this->entity_component_signatures[entity_id].test(component_id);
 }
@@ -135,14 +122,12 @@ TComponent& Registry::get_component(Entity entity) {
   const size_t entity_id = entity.get_id();
 
   auto* component_pool = static_cast<Pool<TComponent>*>(this->entries[component_id]);
-
   return component_pool->get(entity_id);
 }
 
-// System Management:
 template <typename TSystem, typename... TArgs>
 void Registry::add_system(TArgs&&... args) {
-  TSystem* system = new TSystem(std::forward<TArgs>(args)...);
+  auto* system = new TSystem(std::forward<TArgs>(args)...);
   this->systems.insert(std::make_pair(std::type_index(typeid(TSystem)), system));
 }
 
@@ -158,9 +143,33 @@ bool Registry::has_system(void) const {
 }
 
 template <typename TSystem>
-IComponent& Registry::get_system(void) const {
+TSystem& Registry::get_system(void) const {
   auto system = this->systems.find(std::type_index(typeid(TSystem)));
-  return *(static_cast<TSystem>(system->second));
+  if (system == this->systems.end()) {
+    throw std::runtime_error("System not found");
+  }
+
+  return *static_cast<TSystem*>(system->second);
+}
+
+template <typename TComponent, typename... TArgs>
+void Entity::add_component(TArgs&&... args) {
+  this->registry->template add_component<TComponent>(*this, std::forward<TArgs>(args)...);
+}
+
+template <typename TComponent>
+void Entity::remove_component(void) {
+  this->registry->template remove_component<TComponent>(*this);
+}
+
+template <typename TComponent>
+bool Entity::has_component(void) const {
+  return this->registry->template has_component<TComponent>(*this);
+}
+
+template <typename TComponent>
+TComponent& Entity::get_component(void) const {
+  return this->registry->template get_component<TComponent>(*this);
 }
 
 #endif  // REGISTRY_H

@@ -41,7 +41,6 @@ class Game {
   Game& operator=(const Game&) = delete;
 
   // --- Private Methods ---
-  void Setup(void);
   void ProcessInput(void);
   void Update(void);
   void Render(void);
@@ -50,6 +49,7 @@ class Game {
   static Game* get_instance(void);
 
   void Init(void);
+  void Setup(void);
   void Run(void);
   void Destroy(void);
 };

@@ -7,8 +7,7 @@
 
 #include "Component.h"
 #include "Constants.h"
-
-class Entity;  // Forward declaration.
+#include "Entity.h"
 
 // Abstract class for all the systems:
 class System {
@@ -34,7 +33,7 @@ class System {
 template <typename TComponent>
 void System::required_component(void) {
   const size_t component_id = Component<TComponent>::get_id();
-  // component_signature.set(component_id);
+  this->signature.set(component_id);
 }
 
-# endif  // SYSTEM_H
+#endif  // SYSTEM_H

@@ -5,14 +5,18 @@
 
 struct IComponent {
  protected:
-  inline static size_t next_id = 0;
+  static size_t get_next_id(void) {
+    static size_t next_id = 0;
+    return next_id++;
+  }
 };
 
 template <typename TComponent>
-class Component : IComponent {
+class Component : public IComponent {
  public:
   static size_t get_id(void) {
-    return next_id++;
+    static size_t id = IComponent::get_next_id();
+    return id;
   }
 };
 
