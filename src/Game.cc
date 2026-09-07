@@ -80,10 +80,13 @@ void Game::Init(void) {
 }
 
 void Game::Setup(void) {
-  // this->asset_manager->add_texture(this->renderer, "enemy_1", "../assets/enemy_1.png");
+  this->registry->add_system<RenderSystem>();
+  this->asset_manager->add_texture(this->renderer, "enemy_1", "./assets/enemy_1.png");
 
   Entity entity = this->registry->create_entity();
-  entity.add_component<TransformComponent>(glm::vec2(100.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
+
+  entity.add_component<SpriteComponent>("enemy_1", 16, 16, 0, 0);
+  entity.add_component<TransformComponent>(glm::vec2(100.0, 100.0), glm::vec2(2.0, 2.0), 0.0);
 }
 
 void Game::ProcessInput(void) {
@@ -108,11 +111,16 @@ void Game::ProcessInput(void) {
   }
 }
 
-void Game::Update(void) {}
+void Game::Update(void) {
+  this->registry->update();
+}
 
 void Game::Render(void) {
   SDL_SetRenderDrawColor(this->renderer, 225, 225, 24, 225);
   SDL_RenderClear(this->renderer);
+
+  this->registry->get_system<RenderSystem>().Update(this->renderer, *this->asset_manager);
+
   SDL_SetRenderDrawColor(this->renderer, 225, 98, 245, 225);
   SDL_RenderFillRect(this->renderer, &this->rect_1);
   SDL_RenderPresent(this->renderer);  // Swap the drawing matrix.
@@ -121,7 +129,7 @@ void Game::Render(void) {
 void Game::Run(void) {
   while (this->isRunning) {
     this->ProcessInput();
-    // this->Update();
+    this->Update();
     this->Render();
   }
 }

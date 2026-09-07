@@ -92,6 +92,8 @@ void Registry::add_component(Entity entity, TArgs&&... args) {
   auto* pool = static_cast<Pool<TComponent>*>(this->entries[component_id]);
   pool->set(entity_id, component);
   this->entity_component_signatures[entity_id].set(component_id);
+
+  std::cout << "[Registry] Added component " << component_id << " to entity " << entity_id << ".\n";
 }
 
 template <typename TComponent>

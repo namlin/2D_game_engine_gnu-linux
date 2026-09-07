@@ -1,5 +1,5 @@
 #ifndef ASSETMANAGER_H
-#define ASSETMANAHER_H
+#define ASSETMANAGER_H
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -17,7 +17,7 @@ class AssetManager {
   ~AssetManager(void);
 
   void clear_assets(void);
-  void add_texture(SDL_Renderer* renderer, const std::string& asset_id, const std::string& file_path);
+  void add_texture(SDL_Renderer* renderer, const std::string& asset_id, const char* file_path);
 
   SDL_Texture* get_texture(const std::string& id) const;
 };
