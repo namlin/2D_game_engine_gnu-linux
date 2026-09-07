@@ -8,6 +8,7 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 
+#include "../include/AssetManager.h"
 #include "../include/Component.h"
 #include "../include/Entity.h"
 #include "../include/Registry.h"
@@ -30,6 +31,7 @@ class Game {
   SDL_Rect rect_1;
   bool isRunning = false;
 
+  AssetManager* asset_manager = nullptr;
   Registry* registry = nullptr;
 
   // --- Singleton Encapsulation ---

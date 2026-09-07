@@ -3,6 +3,13 @@
 Game::Game(void) {
   std::cout << "[GAME] Constructor Executing.\n";
 
+  this->asset_manager = new AssetManager();
+
+  if (this->asset_manager == nullptr) {
+    std::cerr << "[GAME] ERROR: No dynamic memory was allocated for the asset_manager pointer.\n";
+    std::exit(EXIT_FAILURE);
+  }
+
   this->registry = new Registry();
 
   if (this->registry == nullptr) {
@@ -13,7 +20,8 @@ Game::Game(void) {
 
 Game::~Game(void) {
   std::cout << "[GAME] Destructor Executing.\n";
-  // this->registry.reset();
+
+  delete this->asset_manager;
   delete this->registry;
 }
 
@@ -72,6 +80,8 @@ void Game::Init(void) {
 }
 
 void Game::Setup(void) {
+  // this->asset_manager->add_texture(this->renderer, "enemy_1", "../assets/enemy_1.png");
+
   Entity entity = this->registry->create_entity();
   entity.add_component<TransformComponent>(glm::vec2(100.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
 }
@@ -82,7 +92,7 @@ void Game::ProcessInput(void) {
   while (SDL_PollEvent(&SDL_event)) {
     switch (SDL_event.type) {
       case SDL_QUIT:
-        isRunning = false;
+        this->isRunning = false;
         break;
 
       case SDL_KEYDOWN:
