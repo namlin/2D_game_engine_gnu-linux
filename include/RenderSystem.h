@@ -14,8 +14,8 @@ class RenderSystem : public System {
  public:
   RenderSystem(void) {
     // Define the signature of RenderSystem:
-    this->required_component<SpriteComponent>();
-    this->required_component<TransformComponent>();
+    this->require_component<SpriteComponent>();
+    this->require_component<TransformComponent>();
   }
 
   ~RenderSystem(void);

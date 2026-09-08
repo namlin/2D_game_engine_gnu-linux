@@ -80,11 +80,15 @@ void Game::Init(void) {
 }
 
 void Game::Setup(void) {
+  // Add systems:
   this->registry->add_system<RenderSystem>();
+  this->registry->add_system<MovementSystem>();
+
   this->asset_manager->add_texture(this->renderer, "enemy_1", "./assets/enemy_1.png");
 
   Entity entity = this->registry->create_entity();
 
+  entity.add_component<RigidBodyComponent>(glm::vec2(50, 0));
   entity.add_component<SpriteComponent>("enemy_1", 16, 16, 0, 0);
   entity.add_component<TransformComponent>(glm::vec2(100.0, 100.0), glm::vec2(2.0, 2.0), 0.0);
 }
@@ -112,7 +116,23 @@ void Game::ProcessInput(void) {
 }
 
 void Game::Update(void) {
+  size_t time_to_wait = MILLISECS_PER_FRAME - (SDL_GetTicks()) - this->millisecs_previous_frame;
+
+  // Delay if going faster:
+  if (0 < time_to_wait && time_to_wait <= MILLISECS_PER_FRAME) {
+    SDL_Delay(time_to_wait);
+  }
+
+  // Converts to seconds:
+  double delta_time = (SDL_GetTicks() - this->millisecs_previous_frame) - 1000.0;
+
+  // TODO: Add this variable to the Lua state.
+
+  this->millisecs_previous_frame = SDL_GetTicks();
+
   this->registry->update();
+
+  this->registry->get_system<MovementSystem>().update(delta_time);
 }
 
 void Game::Render(void) {
@@ -123,6 +143,7 @@ void Game::Render(void) {
 
   SDL_SetRenderDrawColor(this->renderer, 225, 98, 245, 225);
   SDL_RenderFillRect(this->renderer, &this->rect_1);
+
   SDL_RenderPresent(this->renderer);  // Swap the drawing matrix.
 }
 

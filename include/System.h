@@ -27,11 +27,11 @@ class System {
   std::bitset<MAX_COMPONENTS>& get_component_signature(void);
 
   template <typename TComponent>
-  void required_component(void);
+  void require_component(void);
 };
 
 template <typename TComponent>
-void System::required_component(void) {
+void System::require_component(void) {
   const size_t component_id = Component<TComponent>::get_id();
   this->signature.set(component_id);
 }

@@ -15,10 +15,16 @@
 #include "../include/System.h"
 
 // Components:
+#include "../include/RigidBodyComponent.h"
+#include "../include/SpriteComponent.h"
 #include "../include/TransformComponent.h"
 
 // Systems:
+#include "../include/MovementSystem.h"
 #include "../include/RenderSystem.h"
+
+const uint8_t FPS = 30;
+const uint16_t MILLISECS_PER_FRAME = 1000 / FPS;
 
 class Game {
  private:
@@ -29,6 +35,8 @@ class Game {
   uint16_t window_width = 256;
   uint16_t window_height = 192;
   const char* window_title = "2D Game Engine";
+
+  uint16_t millisecs_previous_frame = 0;
 
   SDL_Renderer* renderer = nullptr;
   SDL_Rect rect_1;
