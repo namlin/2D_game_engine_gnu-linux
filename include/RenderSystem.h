@@ -1,5 +1,5 @@
 #ifndef RENDERSYSTEM_H
-#define RENDERSYSTEMT_H
+#define RENDERSYSTEM_H
 
 #include <SDL2/SDL.h>
 

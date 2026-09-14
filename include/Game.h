@@ -15,11 +15,13 @@
 #include "../include/System.h"
 
 // Components:
+#include "../include/CircleColliderComponent.h"
 #include "../include/RigidBodyComponent.h"
 #include "../include/SpriteComponent.h"
 #include "../include/TransformComponent.h"
 
 // Systems:
+#include "../include/CollisionSystem.h"
 #include "../include/MovementSystem.h"
 #include "../include/RenderSystem.h"
 
@@ -32,8 +34,10 @@ class Game {
   inline static Game* instance;
 
   SDL_Window* window = nullptr;
-  uint16_t window_width = 256;
-  uint16_t window_height = 192;
+  // uint16_t window_width = 256;
+  // uint16_t window_height = 192;
+  uint16_t window_width = 800;
+  uint16_t window_height = 800;
   const char* window_title = "2D Game Engine";
 
   uint16_t millisecs_previous_frame = 0;

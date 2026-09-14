@@ -46,7 +46,7 @@ void Game::Init(void) {
     return;
   }
 
-  // Initialize SDL TFT:
+  // Initialize SDL TTF:
   if (TTF_Init() != 0) {
     std::cerr << "[GAME] ERROR: SDL TTF was not initialized.\n";
     std::exit(EXIT_FAILURE);
@@ -81,16 +81,29 @@ void Game::Init(void) {
 
 void Game::Setup(void) {
   // Add systems:
+  this->registry->add_system<CollisionSystem>();
   this->registry->add_system<RenderSystem>();
   this->registry->add_system<MovementSystem>();
 
+  // Register assets:
   this->asset_manager->add_texture(this->renderer, "enemy_1", "./assets/enemy_1.png");
+  this->asset_manager->add_texture(this->renderer, "enemy_2", "./assets/enemy_1.png");
 
-  Entity entity = this->registry->create_entity();
+  // ---Create entities---
 
-  entity.add_component<RigidBodyComponent>(glm::vec2(50, 0));
-  entity.add_component<SpriteComponent>("enemy_1", 16, 16, 0, 0);
-  entity.add_component<TransformComponent>(glm::vec2(100.0, 100.0), glm::vec2(2.0, 2.0), 0.0);
+  // Enemy 1:
+  Entity enemy_1 = this->registry->create_entity();
+  enemy_1.add_component<CircleColliderComponent>(8, 16, 16);
+  enemy_1.add_component<RigidBodyComponent>(glm::vec2(50, 0));
+  enemy_1.add_component<SpriteComponent>("enemy_1", 16, 16, 0, 0);
+  enemy_1.add_component<TransformComponent>(glm::vec2(200.0, 100.0), glm::vec2(2.0, 2.0), 0.0);
+
+  // Enemy 2:
+  Entity enemy_2 = this->registry->create_entity();
+  enemy_2.add_component<CircleColliderComponent>(8, 16, 16);
+  enemy_2.add_component<RigidBodyComponent>(glm::vec2(-50, 0));
+  enemy_2.add_component<SpriteComponent>("enemy_2", 16, 16, 0, 0);
+  enemy_2.add_component<TransformComponent>(glm::vec2(600.0, 100.0), glm::vec2(2.0, 2.0), 0.0);
 }
 
 void Game::ProcessInput(void) {
@@ -123,8 +136,8 @@ void Game::Update(void) {
     SDL_Delay(time_to_wait);
   }
 
-  // Converts to seconds:
-  double delta_time = (SDL_GetTicks() - this->millisecs_previous_frame) - 1000.0;
+  // Convert to seconds:
+  double delta_time = (SDL_GetTicks() - this->millisecs_previous_frame) / 1000.0;
 
   // TODO: Add this variable to the Lua state.
 
@@ -133,6 +146,7 @@ void Game::Update(void) {
   this->registry->update();
 
   this->registry->get_system<MovementSystem>().update(delta_time);
+  this->registry->get_system<CollisionSystem>().update();
 }
 
 void Game::Render(void) {
