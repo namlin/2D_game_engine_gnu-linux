@@ -1,8 +1,10 @@
 #ifndef COLLISSIONSYSTEM_H
 #define COLLISSIONSYSTEM_H
 
-#include <iostream>
+#include <iostream>  // TEST
 
+#include "../include/CollisionEvent.h"
+#include "../include/EventManager.h"
 #include "../include/System.h"
 
 class CollisionSystem : public System {
@@ -12,7 +14,7 @@ class CollisionSystem : public System {
     this->require_component<TransformComponent>();
   }
 
-  void update(void) {
+  void update(EventManager& event_manager) {
     auto entities = this->get_entities();
 
     for (auto i = entities.begin(); i != entities.end(); i++) {
@@ -47,7 +49,7 @@ class CollisionSystem : public System {
 
         if (collision) {
           std::cout << "[CollisionSystem] Collision between " << a.get_id() << " and " << b.get_id() << ".\n";
-          // TODO: emit event.
+          event_manager->emit_event(a, b);
         }
       }
     }

@@ -10,6 +10,13 @@ Game::Game(void) {
     std::exit(EXIT_FAILURE);
   }
 
+  this->event_manager = new EventManager();
+
+  if (this->event_manager == nullptr) {
+    std::cerr << "[GAME] ERROR: No dynamic memory was allocated for the event_manager pointer.\n";
+    std::exit(EXIT_FAILURE);
+  }
+
   this->registry = new Registry();
 
   if (this->registry == nullptr) {
@@ -22,6 +29,7 @@ Game::~Game(void) {
   std::cout << "[GAME] Destructor Executing.\n";
 
   delete this->asset_manager;
+  delete this->event_manager;
   delete this->registry;
 }
 
@@ -82,6 +90,7 @@ void Game::Init(void) {
 void Game::Setup(void) {
   // Add systems:
   this->registry->add_system<CollisionSystem>();
+  this->registry->add_system<DamageSystem>();
   this->registry->add_system<RenderSystem>();
   this->registry->add_system<MovementSystem>();
 
@@ -143,10 +152,14 @@ void Game::Update(void) {
 
   this->millisecs_previous_frame = SDL_GetTicks();
 
+  // Reset subscriptions.
+  this->event_manager-reset();
+  this->registry->get_system<DamageSystem>().subscribe_to_collision_event(this->event_manager);
+
   this->registry->update();
 
   this->registry->get_system<MovementSystem>().update(delta_time);
-  this->registry->get_system<CollisionSystem>().update();
+  this->registry->get_system<CollisionSystem>().update(this->event_manager);
 }
 
 void Game::Render(void) {

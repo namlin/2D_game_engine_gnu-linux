@@ -8,7 +8,11 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 
+// Managers:
 #include "../include/AssetManager.h"
+#include "../include/EventManager.h"
+
+// ECS:
 #include "../include/Component.h"
 #include "../include/Entity.h"
 #include "../include/Registry.h"
@@ -22,6 +26,7 @@
 
 // Systems:
 #include "../include/CollisionSystem.h"
+#include "../include/DamageSystem.h"
 #include "../include/MovementSystem.h"
 #include "../include/RenderSystem.h"
 
@@ -47,7 +52,10 @@ class Game {
   bool isRunning = false;
 
   AssetManager* asset_manager = nullptr;
+  EventManager* event_manager = nullptr;
+
   Registry* registry = nullptr;
+
 
   // --- Singleton Encapsulation ---
   Game(void);

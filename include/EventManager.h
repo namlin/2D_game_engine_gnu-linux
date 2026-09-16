@@ -5,7 +5,9 @@
 #include <iostream>
 #include <list>
 #include <map>
-#include <typedefindex>
+#include <typeindex>
+
+#include "../include/Event.h"
 
 // Interface.
 class IEventCallback {
@@ -20,26 +22,21 @@ class IEventCallback {
   }
 };
 
-class EventManager {
-  EventManager(void);
-  ~EventManager(void);
-};
-
 template <typename TOwner, typename TEvent>
 class EventCallback : public IEventCallback {
  private:
   typedef void(TOwner::*CallbackFunction)(TEvent&);
 
   TOwner* owner_instance;
-  Callbackfunction callback_function;
+  CallbackFunction callback_function;
 
-  virtual void call(Event% event) override {
+  virtual void call(Event& event) override {
     // Cast to the specific derivate class:
     std::invoke(this->callback_function, this->owner_instance, static_cast<TEvent&>(event));
   }
 
  public:
-  EventCallback(TOwner* owner_instance, CallbackFunction callback_fucntion) {
+  EventCallback(TOwner* owner_instance, CallbackFunction callback_function) {
     this->owner_instance = owner_instance;
     this->callback_function = callback_function;
   }
@@ -49,7 +46,7 @@ typedef std::list<IEventCallback*> HandlerList;
 
 class EventManager {
  private:
-  std::map<std::type_index, handler_list*> subscribers;
+  std::map<std::type_index, HandlerList*> subscribers;
 
  public:
   EventManager(void) {
@@ -66,23 +63,23 @@ class EventManager {
 
   template <typename TEvent, typename TOwner>
   void subscribe_to_event(TOwner* owner_instance, void (TOwner::*callback_function)(TEvent&)) {
-    if (!this->subscribers[typeid(TEvent)].get()) {
+    if (!this->subscribers[typeid(TEvent)]) {
       this->subscribers[typeid(TEvent)] = new HandlerList();
     }
 
     auto subscriber = new EventCallback<TOwner, TEvent>(owner_instance, callback_function);
-    this->subscribers[typeid(TEvent)]->push_back(std::move(subsciber));
+    this->subscribers[typeid(TEvent)]->push_back(std::move(subscriber));
   }
 
   template <typename TEvent, typename ... TArgs>
-  void emit_event(TArgs&% ... args) {
-    auto handlers = this->subscribers[typeid(TEvent)].get();
+  void emit_event(TArgs&& ... args) {
+    auto handlers = this->subscribers[typeid(TEvent)];
 
     if (handlers) {
-      for (auto it = handlers->begin(); it != handlers.end(); it++) {
-        auto handler = it->get();
+      for (auto it = handlers->begin(); it != handlers->end(); it++) {
+        auto handler = *it;
         TEvent event(std::forward<TArgs>(args)...);
-        hanlder->execute(event);
+        handler->execute(event);
       }
     }
   }

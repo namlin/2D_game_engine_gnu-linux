@@ -4,6 +4,8 @@
 #include <cstddef>
 #include <utility>
 
+#include "../include/Registry.h"
+
 class Registry;
 
 class Entity {
@@ -16,6 +18,7 @@ class Entity {
  public:
   explicit Entity(size_t id) : id(id) {}
   size_t get_id(void) const;
+  void delete_entity(void);
 
   bool operator==(const Entity& other) const { return id == other.id; }
   bool operator!=(const Entity& other) const { return id != other.id; }
