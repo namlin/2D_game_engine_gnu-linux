@@ -3,10 +3,10 @@
 
 #include <iostream>  // TEST
 
-#include "../include/CollisionEvent.h"
-#include "../include/CircleColliderComponent.h"
-#include "../include/EventManager.h"
-#include "../include/System.h"
+#include "CircleColliderComponent.h"
+#include "CollisionEvent.h"
+#include "EventManager.h"
+#include "System.h"
 
 class DamageSystem : public System {
  public:
@@ -15,7 +15,7 @@ class DamageSystem : public System {
   }
 
   void subscribe_to_collision_event(EventManager& event_manager) {
-    event_manager->subscribe_to_event<CollisionEvent, DamageSystem>(this, &DamageSystem::on_collision);
+    event_manager.subscribe_to_event<CollisionEvent, DamageSystem>(this, &DamageSystem::on_collision);
   }
 
   void on_collision(CollisionEvent& e) {

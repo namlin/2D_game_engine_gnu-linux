@@ -1,11 +1,16 @@
 #ifndef COLLISSIONSYSTEM_H
 #define COLLISSIONSYSTEM_H
 
+#include <algorithm>
 #include <iostream>  // TEST
 
-#include "../include/CollisionEvent.h"
-#include "../include/EventManager.h"
-#include "../include/System.h"
+#include <glm/glm.hpp>
+
+#include "CircleColliderComponent.h"
+#include "CollisionEvent.h"
+#include "EventManager.h"
+#include "System.h"
+#include "TransformComponent.h"
 
 class CollisionSystem : public System {
  public:
@@ -49,7 +54,7 @@ class CollisionSystem : public System {
 
         if (collision) {
           std::cout << "[CollisionSystem] Collision between " << a.get_id() << " and " << b.get_id() << ".\n";
-          event_manager->emit_event(a, b);
+          event_manager.emit_event<CollisionEvent>(a, b);
         }
       }
     }

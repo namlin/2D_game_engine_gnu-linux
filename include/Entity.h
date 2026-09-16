@@ -4,8 +4,6 @@
 #include <cstddef>
 #include <utility>
 
-#include "../include/Registry.h"
-
 class Registry;
 
 class Entity {

@@ -4,6 +4,8 @@
 #include <cstddef>
 #include <vector>
 
+#include "Constants.h"
+
 class IPool {
  public:
   virtual ~IPool(void) = default;

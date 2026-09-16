@@ -5,10 +5,9 @@
 #include <bitset>
 #include <vector>
 
-#include "../include/Component.h"
-#include "../include/Constants.h"
-
-class Entity;
+#include "Component.h"
+#include "Constants.h"
+#include "Entity.h"
 
 // Abstract class for all the systems:
 class System {

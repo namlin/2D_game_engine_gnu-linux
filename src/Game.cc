@@ -153,13 +153,13 @@ void Game::Update(void) {
   this->millisecs_previous_frame = SDL_GetTicks();
 
   // Reset subscriptions.
-  this->event_manager-reset();
-  this->registry->get_system<DamageSystem>().subscribe_to_collision_event(this->event_manager);
+  this->event_manager->reset();
+  this->registry->get_system<DamageSystem>().subscribe_to_collision_event(*this->event_manager);
 
   this->registry->update();
 
   this->registry->get_system<MovementSystem>().update(delta_time);
-  this->registry->get_system<CollisionSystem>().update(this->event_manager);
+  this->registry->get_system<CollisionSystem>().update(*this->event_manager);
 }
 
 void Game::Render(void) {

@@ -3,8 +3,9 @@
 
 // Abstract class for all events.
 class Event {
-  // Default constructor:
+ public:
   Event(void) = default;
+  virtual ~Event(void) = default;
 };
 
 #endif  // EVENT_H
