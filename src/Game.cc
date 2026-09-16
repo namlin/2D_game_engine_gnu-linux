@@ -89,10 +89,11 @@ void Game::Init(void) {
 
 void Game::Setup(void) {
   // Add systems:
+  this->registry->add_system<AnimationSystem>();
   this->registry->add_system<CollisionSystem>();
   this->registry->add_system<DamageSystem>();
-  this->registry->add_system<RenderSystem>();
   this->registry->add_system<MovementSystem>();
+  this->registry->add_system<RenderSystem>();
 
   // Register assets:
   this->asset_manager->add_texture(this->renderer, "enemy_1", "./assets/enemy_1.png");
@@ -102,6 +103,7 @@ void Game::Setup(void) {
 
   // Enemy 1:
   Entity enemy_1 = this->registry->create_entity();
+  enemy_1.add_component<AnimationComponent>(1, 10, true);
   enemy_1.add_component<CircleColliderComponent>(8, 16, 16);
   enemy_1.add_component<RigidBodyComponent>(glm::vec2(50, 0));
   enemy_1.add_component<SpriteComponent>("enemy_1", 16, 16, 0, 0);
@@ -109,6 +111,7 @@ void Game::Setup(void) {
 
   // Enemy 2:
   Entity enemy_2 = this->registry->create_entity();
+  enemy_2.add_component<AnimationComponent>(1, 10, true);
   enemy_2.add_component<CircleColliderComponent>(8, 16, 16);
   enemy_2.add_component<RigidBodyComponent>(glm::vec2(-50, 0));
   enemy_2.add_component<SpriteComponent>("enemy_2", 16, 16, 0, 0);
@@ -158,8 +161,9 @@ void Game::Update(void) {
 
   this->registry->update();
 
-  this->registry->get_system<MovementSystem>().update(delta_time);
+  this->registry->get_system<AnimationSystem>().update();
   this->registry->get_system<CollisionSystem>().update(*this->event_manager);
+  this->registry->get_system<MovementSystem>().update(delta_time);
 }
 
 void Game::Render(void) {

@@ -19,12 +19,14 @@
 #include "../include/System.h"
 
 // Components:
+#include "../include/AnimationComponent.h"
 #include "../include/CircleColliderComponent.h"
 #include "../include/RigidBodyComponent.h"
 #include "../include/SpriteComponent.h"
 #include "../include/TransformComponent.h"
 
 // Systems:
+#include "../include/AnimationSystem.h"
 #include "../include/CollisionSystem.h"
 #include "../include/DamageSystem.h"
 #include "../include/MovementSystem.h"
@@ -55,7 +57,6 @@ class Game {
   EventManager* event_manager = nullptr;
 
   Registry* registry = nullptr;
-
 
   // --- Singleton Encapsulation ---
   Game(void);
