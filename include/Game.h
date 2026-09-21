@@ -10,6 +10,7 @@
 
 // Managers:
 #include "../include/AssetManager.h"
+#include "../include/ControllerManager.h"
 #include "../include/EventManager.h"
 
 // ECS:
@@ -54,6 +55,7 @@ class Game {
   bool isRunning = false;
 
   AssetManager* asset_manager = nullptr;
+  ControllerManager* controller_manager = nullptr;
   EventManager* event_manager = nullptr;
 
   Registry* registry = nullptr;

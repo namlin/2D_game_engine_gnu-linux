@@ -10,6 +10,13 @@ Game::Game(void) {
     std::exit(EXIT_FAILURE);
   }
 
+  this->controller_manager = new ControllerManager();
+
+  if (this->controller_manager == nullptr) {
+    std::cerr << "[GAME] ERROR: No dynamic memory was allocated for the controller_manager pointer.\n";
+    std::exit(EXIT_FAILURE);
+  }
+
   this->event_manager = new EventManager();
 
   if (this->event_manager == nullptr) {
@@ -29,6 +36,7 @@ Game::~Game(void) {
   std::cout << "[GAME] Destructor Executing.\n";
 
   delete this->asset_manager;
+  delete this->controller_manager;
   delete this->event_manager;
   delete this->registry;
 }
@@ -38,7 +46,7 @@ Game* Game::get_instance(void) {
     instance = new Game();
 
     if (instance == nullptr) {
-      std::cerr << "[GAME] ERROR: No dynamic memory was allocated for Game instance.\n";
+      std::cerr << "[GAME] ERROR: No dynamic memory was allocated for the Game instance.\n";
       std::exit(EXIT_FAILURE);
     }
   }
@@ -95,6 +103,14 @@ void Game::Setup(void) {
   this->registry->add_system<MovementSystem>();
   this->registry->add_system<RenderSystem>();
 
+  // Map keys:
+
+  // Use the SDL keycodes.
+  this->controller_manager->add_action_key("Move Up", SDLK_w);
+  this->controller_manager->add_action_key("Move Down", SDLK_s);
+  this->controller_manager->add_action_key("Move Left", SDLK_a);
+  this->controller_manager->add_action_key("Move Right", SDLK_d);
+
   // Register assets:
   this->asset_manager->add_texture(this->renderer, "enemy_1", "./assets/enemy_1.png");
   this->asset_manager->add_texture(this->renderer, "enemy_2", "./assets/enemy_1.png");
@@ -130,8 +146,15 @@ void Game::ProcessInput(void) {
       case SDL_KEYDOWN:
         if (SDL_event.key.keysym.sym == SDLK_ESCAPE) {
           this->isRunning = false;
+          break;
         }
 
+        this->controller_manager->key_down(SDL_event.key.keysym.sym);
+
+        break;
+
+      case SDL_KEYUP:
+        this->controller_manager->key_up(SDL_event.key.keysym.sym);
         break;
 
       default:
