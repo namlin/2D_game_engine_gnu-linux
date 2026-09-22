@@ -7,6 +7,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
+#include <sol/sol.hpp>
 
 // Managers:
 #include "../include/AssetManager.h"
@@ -59,6 +60,8 @@ class Game {
   EventManager* event_manager = nullptr;
 
   Registry* registry = nullptr;
+
+  sol::state lua;
 
   // --- Singleton Encapsulation ---
   Game(void);

@@ -103,6 +103,8 @@ void Game::Setup(void) {
   this->registry->add_system<MovementSystem>();
   this->registry->add_system<RenderSystem>();
 
+  this->lua.open_libraries(sol::lib::base);
+
   // Map keys:
 
   // Use the SDL keycodes.
@@ -112,10 +114,19 @@ void Game::Setup(void) {
   this->controller_manager->add_action_key("Move Right", SDLK_d);
 
   // Register assets:
+  this->asset_manager->add_texture(this->renderer, "Player", "./assets/Player.png");
   this->asset_manager->add_texture(this->renderer, "enemy_1", "./assets/enemy_1.png");
   this->asset_manager->add_texture(this->renderer, "enemy_2", "./assets/enemy_1.png");
 
   // ---Create entities---
+
+  // Player:
+  Entity player = this->registry->create_entity();
+  // player.add_component<AnimationComponent>(1, 10, true);
+  player.add_component<CircleColliderComponent>(8, 16, 16);
+  player.add_component<RigidBodyComponent>(glm::vec2(0, 0));
+  player.add_component<SpriteComponent>("Player", 16, 16, 0, 0);
+  player.add_component<TransformComponent>(glm::vec2(400.0, 300.0), glm::vec2(2.0, 2.0), 0.0);
 
   // Enemy 1:
   Entity enemy_1 = this->registry->create_entity();
