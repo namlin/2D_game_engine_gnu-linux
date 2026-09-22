@@ -104,7 +104,7 @@ void Game::Setup(void) {
   this->registry->add_system<RenderSystem>();
   this->registry->add_system<ScriptSystem>();
 
-  this->lua.open_libraries(sol::lib::base);
+  this->lua.open_libraries(sol::lib::base, sol::lib::math);
   this->registry->get_system<ScriptSystem>().create_lua_binding(this->lua);
 
   // Map keys:
