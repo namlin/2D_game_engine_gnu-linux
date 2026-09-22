@@ -16,7 +16,12 @@ class ScriptSystem : public System {
   }
 
   void create_lua_binding(sol::state& lua) {
+    // Classes:
+    lua.new_usertype<Entity>("Entity");
+
+    // Functions:
     lua.set_function("is_action_activated", is_action_activated);
+    lua.set_function("set_velocity", set_velocity);
   }
 
   void update(sol::state& lua) {
@@ -24,6 +29,7 @@ class ScriptSystem : public System {
       const auto& script = entity.get_component<ScriptComponent>();
 
       if (script.update != sol::nil) {
+        lua["this"] = entity;
         script.update();
       }
     }
