@@ -3,13 +3,20 @@
 
 #include <sol/sol.hpp>
 
-#include "../ScriptComponent.hpp"
-#include "../include/ECS"  // TEST
+#include "../include/LuaBinding.h"
 
-class ScriptSystem {
+#include "../include/ScriptComponent.h"
+#include "../include/Entity.h"
+#include "../include/System.h"
+
+class ScriptSystem : public System {
  public:
   ScriptSystem(void) {
     this->require_component<ScriptComponent>();
+  }
+
+  void create_lua_binding(sol::state& lua) {
+    lua.set_function("is_action_activated", is_action_activated);
   }
 
   void update(sol::state& lua) {

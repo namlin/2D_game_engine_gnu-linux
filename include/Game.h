@@ -24,6 +24,7 @@
 #include "../include/AnimationComponent.h"
 #include "../include/CircleColliderComponent.h"
 #include "../include/RigidBodyComponent.h"
+#include "../include/ScriptComponent.h"
 #include "../include/SpriteComponent.h"
 #include "../include/TransformComponent.h"
 
@@ -33,6 +34,7 @@
 #include "../include/DamageSystem.h"
 #include "../include/MovementSystem.h"
 #include "../include/RenderSystem.h"
+#include "../include/ScriptSystem.h"
 
 const uint8_t FPS = 30;
 const uint16_t MILLISECS_PER_FRAME = 1000 / FPS;
@@ -56,7 +58,6 @@ class Game {
   bool isRunning = false;
 
   AssetManager* asset_manager = nullptr;
-  ControllerManager* controller_manager = nullptr;
   EventManager* event_manager = nullptr;
 
   Registry* registry = nullptr;
@@ -77,6 +78,8 @@ class Game {
   void Render(void);
 
  public:
+  ControllerManager* controller_manager = nullptr;
+
   static Game* get_instance(void);
 
   void Init(void);

@@ -102,8 +102,10 @@ void Game::Setup(void) {
   this->registry->add_system<DamageSystem>();
   this->registry->add_system<MovementSystem>();
   this->registry->add_system<RenderSystem>();
+  this->registry->add_system<ScriptSystem>();
 
   this->lua.open_libraries(sol::lib::base);
+  this->registry->get_system<ScriptSystem>().create_lua_binding(this->lua);
 
   // Map keys:
 
@@ -122,9 +124,13 @@ void Game::Setup(void) {
 
   // Player:
   Entity player = this->registry->create_entity();
+  this->lua.script_file("./assets/scripts/player.lua");
+
   // player.add_component<AnimationComponent>(1, 10, true);
   player.add_component<CircleColliderComponent>(8, 16, 16);
   player.add_component<RigidBodyComponent>(glm::vec2(0, 0));
+  // player.add_component<ScriptComponent>(lua["update"]);
+  player.add_component<ScriptComponent>(sol::function(lua["update"]));
   player.add_component<SpriteComponent>("Player", 16, 16, 0, 0);
   player.add_component<TransformComponent>(glm::vec2(400.0, 300.0), glm::vec2(2.0, 2.0), 0.0);
 
@@ -195,6 +201,7 @@ void Game::Update(void) {
 
   this->registry->update();
 
+  this->registry->get_system<ScriptSystem>().update(this->lua);
   this->registry->get_system<AnimationSystem>().update();
   this->registry->get_system<CollisionSystem>().update(*this->event_manager);
   this->registry->get_system<MovementSystem>().update(delta_time);
