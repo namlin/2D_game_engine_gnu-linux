@@ -55,7 +55,7 @@ class Game {
 
   SDL_Renderer* renderer = nullptr;
   SDL_Rect rect_1;
-  bool isRunning = false;
+  bool is_running = false;
 
   AssetManager* asset_manager = nullptr;
   EventManager* event_manager = nullptr;
@@ -73,19 +73,19 @@ class Game {
   Game& operator=(const Game&) = delete;
 
   // --- Private Methods ---
-  void ProcessInput(void);
-  void Update(void);
-  void Render(void);
+  void process_input(void);
+  void update(void);
+  void render(void);
 
  public:
   ControllerManager* controller_manager = nullptr;
 
   static Game* get_instance(void);
 
-  void Init(void);
-  void Setup(void);
-  void Run(void);
-  void Destroy(void);
+  void init(void);
+  void setup(void);
+  void run(void);
+  void destroy(void);
 };
 
 #endif  // GAME_H

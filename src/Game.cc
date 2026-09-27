@@ -54,7 +54,7 @@ Game* Game::get_instance(void) {
   return instance;
 }
 
-void Game::Init(void) {
+void Game::init(void) {
   // Initialize SDL:
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
     std::cerr << "[GAME] ERROR: SDL was not initialized.\n";
@@ -85,7 +85,7 @@ void Game::Init(void) {
     return;
   }
 
-  this->isRunning = true;
+  this->is_running = true;
 
   this->rect_1 = {
     (window_width / 2) - 25,  // X position.
@@ -95,7 +95,7 @@ void Game::Init(void) {
   };
 }
 
-void Game::Setup(void) {
+void Game::setup(void) {
   // Add systems:
   this->registry->add_system<AnimationSystem>();
   this->registry->add_system<CollisionSystem>();
@@ -151,18 +151,18 @@ void Game::Setup(void) {
   enemy_2.add_component<TransformComponent>(glm::vec2(600.0, 100.0), glm::vec2(2.0, 2.0), 0.0);
 }
 
-void Game::ProcessInput(void) {
+void Game::process_input(void) {
   SDL_Event SDL_event;
 
   while (SDL_PollEvent(&SDL_event)) {
     switch (SDL_event.type) {
       case SDL_QUIT:
-        this->isRunning = false;
+        this->is_running = false;
         break;
 
       case SDL_KEYDOWN:
         if (SDL_event.key.keysym.sym == SDLK_ESCAPE) {
-          this->isRunning = false;
+          this->is_running = false;
           break;
         }
 
@@ -180,7 +180,7 @@ void Game::ProcessInput(void) {
   }
 }
 
-void Game::Update(void) {
+void Game::update(void) {
   size_t time_to_wait = MILLISECS_PER_FRAME - (SDL_GetTicks()) - this->millisecs_previous_frame;
 
   // Delay if going faster:
@@ -207,7 +207,7 @@ void Game::Update(void) {
   this->registry->get_system<MovementSystem>().update(delta_time);
 }
 
-void Game::Render(void) {
+void Game::render(void) {
   SDL_SetRenderDrawColor(this->renderer, 225, 225, 24, 225);
   SDL_RenderClear(this->renderer);
 
@@ -219,15 +219,15 @@ void Game::Render(void) {
   SDL_RenderPresent(this->renderer);  // Swap the drawing matrix.
 }
 
-void Game::Run(void) {
-  while (this->isRunning) {
-    this->ProcessInput();
-    this->Update();
-    this->Render();
+void Game::run(void) {
+  while (this->is_running) {
+    this->process_input();
+    this->update();
+    this->render();
   }
 }
 
-void Game::Destroy(void) {
+void Game::destroy(void) {
   SDL_DestroyRenderer(this->renderer);
   SDL_DestroyWindow(this->window);
 

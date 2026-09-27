@@ -12,10 +12,10 @@ int main(int argc, char* argv[]) {
   std::cout << "---Game Engine---\n\n";
 
   Game* game = Game::get_instance();
-  game->Init();
-  game->Setup();
-  game->Run();
-  game->Destroy();
+  game->init();
+  game->setup();
+  game->run();
+  game->destroy();
 
   std::cout << "\nCiao!\n\n";
 
