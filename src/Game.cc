@@ -124,7 +124,7 @@ void Game::setup(void) {
 
   // Player:
   Entity player = this->registry->create_entity();
-  this->lua.script_file("./assets/scripts/player.lua");
+  this->lua.script_file("./assets/lua_scripts/player.lua");
 
   // player.add_component<AnimationComponent>(1, 10, true);
   player.add_component<CircleColliderComponent>(8, 16, 16);

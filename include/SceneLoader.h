@@ -1,6 +1,7 @@
 #ifndef SCENELOADER_H
 #define SCENELOADER_H
 
+#include <glm/glm.hpp>
 #include <SDL2/SDL.h>
 #include <sol/sol.hpp>
 
@@ -12,6 +13,14 @@
 // Managers:
 #include "../include/AssetManager.h"
 #include "../include/ControllerManager.h"
+
+// Components:
+#include "../include/AnimationComponent.h"
+#include "../include/CircleColliderComponent.h"
+#include "../include/RigidBodyComponent.h"
+#include "../include/ScriptComponent.h"
+#include "../include/SpriteComponent.h"
+#include "../include/TransformComponent.h"
 
 class SceneLoader {
  private:
