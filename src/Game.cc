@@ -30,6 +30,13 @@ Game::Game(void) {
     std::cerr << "[GAME] ERROR: No dynamic memory was allocated for the registry pointer.\n";
     std::exit(EXIT_FAILURE);
   }
+
+  this->scene_loader = new SceneLoader();
+
+  if (this->scene_loader == nullptr) {
+    std::cerr << "[GAME] ERROR: No dynamic memory was allocated for the scene_loader pointer.\n";
+    std::exit(EXIT_FAILURE);
+  }
 }
 
 Game::~Game(void) {
@@ -39,6 +46,7 @@ Game::~Game(void) {
   delete this->controller_manager;
   delete this->event_manager;
   delete this->registry;
+  delete this->scene_loader;
 }
 
 Game* Game::get_instance(void) {
@@ -107,6 +115,11 @@ void Game::setup(void) {
   this->lua.open_libraries(sol::lib::base, sol::lib::math);
   this->registry->get_system<ScriptSystem>().create_lua_binding(this->lua);
 
+  this->scene_loader->load_scene("./assets/lua_scripts/scene_01.lua", this->lua,
+                                 *this->asset_manager, *this->controller_manager,
+                                 *this->registry, this->renderer);
+
+  /*
   // Map keys:
 
   // Use the SDL keycodes.
@@ -149,6 +162,7 @@ void Game::setup(void) {
   enemy_2.add_component<RigidBodyComponent>(glm::vec2(-50, 0));
   enemy_2.add_component<SpriteComponent>("enemy_2", 16, 16, 0, 0);
   enemy_2.add_component<TransformComponent>(glm::vec2(600.0, 100.0), glm::vec2(2.0, 2.0), 0.0);
+  */
 }
 
 void Game::process_input(void) {

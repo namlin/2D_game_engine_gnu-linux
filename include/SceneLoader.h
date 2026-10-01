@@ -35,7 +35,8 @@ class SceneLoader {
   void load_scene(const std::string& scene_path, sol::state& lua,
                   AssetManager& asset_manager,
                   ControllerManager& controller_manager,
-                  Registry& registry);
+                  Registry& registry,
+                  SDL_Renderer* renderer);
 };
 
 #endif  // SCENELOADER_H

@@ -36,6 +36,9 @@
 #include "../include/RenderSystem.h"
 #include "../include/ScriptSystem.h"
 
+// Other:
+#include "../include/SceneLoader.h"
+
 const uint8_t FPS = 30;
 const uint16_t MILLISECS_PER_FRAME = 1000 / FPS;
 
@@ -63,6 +66,8 @@ class Game {
   Registry* registry = nullptr;
 
   sol::state lua;
+
+  SceneLoader* scene_loader = nullptr;
 
   // --- Singleton Encapsulation ---
   Game(void);
