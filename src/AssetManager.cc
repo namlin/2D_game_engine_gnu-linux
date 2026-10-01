@@ -17,6 +17,15 @@ void AssetManager::clear_assets(void) {
   }
 
   this->textures.clear();
+  this->clear_fonts();
+}
+
+void AssetManager::clear_fonts(void) {
+  for (auto font : this->fonts) {
+    TTF_CloseFont(font.second);
+  }
+
+  this->fonts.clear();
 }
 
 void AssetManager::add_texture(SDL_Renderer* renderer,
@@ -48,4 +57,23 @@ SDL_Texture* AssetManager::get_texture(const std::string& id) const {
   }
 
   return nullptr;
+}
+
+// Fonts:
+
+void AssetManager::add_font(const std::string& id, const std::string file_path,
+                            size_t font_size) {
+  TTF_Font* font = TTF_OpenFont(file_path.c_str(), font_size);
+
+  if (font == NULL) {
+    std::string error = TTF_GetError();
+    std::cerr << "[AssetManager] " << error << "\n";
+    return;
+  }
+
+  this->fonts.emplace(id, font);
+}
+
+TTF_Font* AssetManager::get_font(const std::string& id) const {
+  return this->fonts.at(id);
 }
