@@ -181,11 +181,26 @@ void Game::process_input(void) {
         }
 
         this->controller_manager->key_down(SDL_event.key.keysym.sym);
-
         break;
 
       case SDL_KEYUP:
         this->controller_manager->key_up(SDL_event.key.keysym.sym);
+        break;
+
+      case SDL_MOUSEMOTION: {
+        int x = 0;
+        int y = 0;
+        SDL_GetMouseState(&x, &y);
+        this->controller_manager->set_mouse_position(x, y);
+        break;
+      }
+
+      case SDL_MOUSEBUTTONDOWN:
+        this->controller_manager->set_mouse_position(SDL_event.button.x, SDL_event.button.y);
+        this->controller_manager->set_mouse_button_down(SDL_event.button.button);
+            std::cout << "Mouse button: "
+              << static_cast<int>(SDL_event.button.button)
+              << "\n";  // TEST
         break;
 
       default:
