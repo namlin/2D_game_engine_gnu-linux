@@ -20,7 +20,7 @@ class RenderSystem : public System {
 
   ~RenderSystem(void);
 
-  void Update(SDL_Renderer* renderer, const AssetManager& asset_manager) {
+  void update(SDL_Renderer* renderer, const AssetManager& asset_manager) {
     for (auto entity : this->get_entities()) {
       const auto sprite = entity.get_component<SpriteComponent>();
       const auto transform = entity.get_component<TransformComponent>();

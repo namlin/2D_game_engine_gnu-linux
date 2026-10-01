@@ -110,6 +110,7 @@ void Game::setup(void) {
   this->registry->add_system<DamageSystem>();
   this->registry->add_system<MovementSystem>();
   this->registry->add_system<RenderSystem>();
+  this->registry->add_system<RenderTextSystem>();
   this->registry->add_system<ScriptSystem>();
 
   this->lua.open_libraries(sol::lib::base, sol::lib::math);
@@ -118,6 +119,11 @@ void Game::setup(void) {
   this->scene_loader->load_scene("./assets/lua_scripts/scene_01.lua", this->lua,
                                  *this->asset_manager, *this->controller_manager,
                                  *this->registry, this->renderer);
+
+  this->asset_manager->add_font("FONT TEST SIZE 24", "./assets/fonts/valu_old_caps.ttf", 24);  // TEST
+  Entity text_entity = this->registry->create_entity();
+  text_entity.add_component<TextComponent>("Score: 69", "FONT TEST SIZE 24", 150, 0, 150, 255);
+  text_entity.add_component<TransformComponent>(glm::vec2(500.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
 
   /*
   // Map keys:
@@ -240,7 +246,8 @@ void Game::render(void) {
   SDL_SetRenderDrawColor(this->renderer, 225, 225, 24, 225);
   SDL_RenderClear(this->renderer);
 
-  this->registry->get_system<RenderSystem>().Update(this->renderer, *this->asset_manager);
+  this->registry->get_system<RenderSystem>().update(this->renderer, *this->asset_manager);
+  this->registry->get_system<RenderTextSystem>().update(this->renderer, this->asset_manager);
 
   SDL_SetRenderDrawColor(this->renderer, 225, 98, 245, 225);
   SDL_RenderFillRect(this->renderer, &this->rect_1);
@@ -257,8 +264,19 @@ void Game::run(void) {
 }
 
 void Game::destroy(void) {
-  SDL_DestroyRenderer(this->renderer);
-  SDL_DestroyWindow(this->window);
+  if (this->asset_manager != nullptr) {
+    this->asset_manager->clear_assets();
+  }
+
+  if (this->renderer != nullptr) {
+    SDL_DestroyRenderer(this->renderer);
+    this->renderer = nullptr;
+  }
+
+  if (this->window != nullptr) {
+    SDL_DestroyWindow(this->window);
+    this->window = nullptr;
+  }
 
   TTF_Quit();
   SDL_Quit();

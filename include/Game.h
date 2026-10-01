@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <iostream>
 
+// SDL:
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
@@ -26,6 +27,7 @@
 #include "../include/RigidBodyComponent.h"
 #include "../include/ScriptComponent.h"
 #include "../include/SpriteComponent.h"
+#include "../include/TextComponent.h"
 #include "../include/TransformComponent.h"
 
 // Systems:
@@ -34,6 +36,7 @@
 #include "../include/DamageSystem.h"
 #include "../include/MovementSystem.h"
 #include "../include/RenderSystem.h"
+#include "../include/RenderTextSystem.h"
 #include "../include/ScriptSystem.h"
 
 // Other:

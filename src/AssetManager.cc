@@ -21,8 +21,11 @@ void AssetManager::clear_assets(void) {
 }
 
 void AssetManager::clear_fonts(void) {
-  for (auto font : this->fonts) {
-    TTF_CloseFont(font.second);
+  for (auto& [id, font] : this->fonts) {
+    if (font != nullptr) {
+      TTF_CloseFont(font);
+      font = nullptr;
+    }
   }
 
   this->fonts.clear();
