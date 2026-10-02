@@ -18,6 +18,7 @@
 // Components:
 #include "../include/AnimationComponent.h"
 #include "../include/CircleColliderComponent.h"
+#include "../include/ClickableComponent.h"
 #include "../include/RigidBodyComponent.h"
 #include "../include/ScriptComponent.h"
 #include "../include/SpriteComponent.h"

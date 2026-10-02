@@ -112,6 +112,7 @@ void Game::setup(void) {
   this->registry->add_system<RenderSystem>();
   this->registry->add_system<RenderTextSystem>();
   this->registry->add_system<ScriptSystem>();
+  this->registry->add_system<UISystem>();
 
   this->lua.open_libraries(sol::lib::base, sol::lib::math);
   this->registry->get_system<ScriptSystem>().create_lua_binding(this->lua);
@@ -206,9 +207,15 @@ void Game::process_input(void) {
       case SDL_MOUSEBUTTONDOWN:
         this->controller_manager->set_mouse_position(SDL_event.button.x, SDL_event.button.y);
         this->controller_manager->set_mouse_button_down(SDL_event.button.button);
+        this->event_manager->emit_event<ClickEvent>(SDL_event.button.button, SDL_event.button.x, SDL_event.button.y);
             std::cout << "Mouse button: "
               << static_cast<int>(SDL_event.button.button)
               << "\n";  // TEST
+        break;
+
+      case SDL_MOUSEBUTTONUP:
+        this->controller_manager->set_mouse_position(SDL_event.button.x, SDL_event.button.y);
+        this->controller_manager->set_mouse_button_up(SDL_event.button.button);
         break;
 
       default:
@@ -235,6 +242,7 @@ void Game::update(void) {
   // Reset subscriptions.
   this->event_manager->reset();
   this->registry->get_system<DamageSystem>().subscribe_to_collision_event(*this->event_manager);
+  this->registry->get_system<UISystem>().subscribe_to_click_event(*this->event_manager);
 
   this->registry->update();
 

@@ -38,6 +38,10 @@
 #include "../include/RenderSystem.h"
 #include "../include/RenderTextSystem.h"
 #include "../include/ScriptSystem.h"
+#include "../include/UISystem.h"
+
+// Events:
+#include "../include/ClickEvent.h"
 
 // Other:
 #include "../include/SceneLoader.h"

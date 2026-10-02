@@ -127,6 +127,15 @@ void SceneLoader::load_entities(sol::state& lua, const sol::table& entities, Reg
       );
     }
 
+    // ClickableComponent:
+    sol::optional<sol::table> has_clickable = components["clickable"];
+
+    if (has_clickable.has_value()) {
+      sol::table clickable = has_clickable.value();
+      new_entity.add_component<ClickableComponent>(
+      );
+    }
+
     // RigidBodyComponent:
     sol::optional<sol::table> has_rigid = components["rigid_body"];
 

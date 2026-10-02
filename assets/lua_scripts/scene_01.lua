@@ -61,6 +61,8 @@ scene = {
     {
       -- Entity 2 - Font:
       components = {
+        clickable = {},
+
         text = {
           text = "Score: 69",
           id = "FONT TEST SIZE 24",
