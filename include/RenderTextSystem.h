@@ -22,15 +22,28 @@ class RenderTextSystem : public System {
   ~RenderTextSystem(void) {}
 
   void update(SDL_Renderer* renderer, AssetManager* asset_manager) {
+    if (asset_manager == nullptr) {
+      return;
+    }
+
     for (auto entity : this->get_entities()) {
       auto& text = entity.get_component<TextComponent>();
       auto& transform = entity.get_component<TransformComponent>();
 
+      TTF_Font* font = asset_manager->get_font(text.font_id);
+      if (font == nullptr) {
+        continue;
+      }
+
       SDL_Surface* surface = TTF_RenderText_Blended(
-        asset_manager->get_font(text.font_id),
+        font,
         text.text.c_str(),
         text.color
       );
+
+      if (surface == nullptr) {
+        continue;
+      }
 
       text.width = surface->w;
       text.height = surface->h;
@@ -38,15 +51,17 @@ class RenderTextSystem : public System {
       SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
       SDL_FreeSurface(surface);
 
-      SDL_Rect destiny_rectangle = {
-        static_cast<int>(transform.position.x),
-        static_cast<int>(transform.position.y),
-        static_cast<int>(text.width * transform.scale.x),
-        static_cast<int>(text.height * transform.scale.y),
-      };
+      if (texture != nullptr) {
+        SDL_Rect destiny_rectangle = {
+          static_cast<int>(transform.position.x),
+          static_cast<int>(transform.position.y),
+          static_cast<int>(text.width * transform.scale.x),
+          static_cast<int>(text.height * transform.scale.y),
+        };
 
-      SDL_RenderCopy(renderer, texture, NULL, &destiny_rectangle);
-      SDL_DestroyTexture(texture);
+        SDL_RenderCopy(renderer, texture, NULL, &destiny_rectangle);
+        SDL_DestroyTexture(texture);
+      }
     }
   }
 };

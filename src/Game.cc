@@ -120,10 +120,12 @@ void Game::setup(void) {
                                  *this->asset_manager, *this->controller_manager,
                                  *this->registry, this->renderer);
 
+  /*
   this->asset_manager->add_font("FONT TEST SIZE 24", "./assets/fonts/valu_old_caps.ttf", 24);  // TEST
   Entity text_entity = this->registry->create_entity();
   text_entity.add_component<TextComponent>("Score: 69", "FONT TEST SIZE 24", 150, 0, 150, 255);
   text_entity.add_component<TransformComponent>(glm::vec2(500.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
+  */
 
   /*
   // Map keys:

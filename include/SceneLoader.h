@@ -8,6 +8,7 @@
 #include <iostream>
 #include <string>
 
+// ECS:
 #include "../include/Registry.h"
 
 // Managers:
@@ -20,12 +21,15 @@
 #include "../include/RigidBodyComponent.h"
 #include "../include/ScriptComponent.h"
 #include "../include/SpriteComponent.h"
+#include "../include/TextComponent.h"
 #include "../include/TransformComponent.h"
 
 class SceneLoader {
  private:
   void load_sprites(SDL_Renderer* renderer, const sol::table& sprites, AssetManager& asset_manager);
+  void load_fonts(const sol::table& fonts, AssetManager& asset_manager);
   void load_keys(const sol::table& keys, ControllerManager& controller_manager);
+  void load_buttons(const sol::table& buttons, ControllerManager& controller_manager);
   void load_entities(sol::state& lua, const sol::table& entities, Registry& registry);
 
  public:

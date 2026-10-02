@@ -70,7 +70,7 @@ void AssetManager::add_font(const std::string& id, const std::string file_path,
 
   if (font == NULL) {
     std::string error = TTF_GetError();
-    std::cerr << "[AssetManager] " << error << "\n";
+    std::cerr << "[AssetManager] ERROR: " << error << "\n";
     return;
   }
 
@@ -78,5 +78,12 @@ void AssetManager::add_font(const std::string& id, const std::string file_path,
 }
 
 TTF_Font* AssetManager::get_font(const std::string& id) const {
-  return this->fonts.at(id);
+  auto it = this->fonts.find(id);
+
+  if (it == this->fonts.end()) {
+    std::cerr << "[AssetManager] ERROR: font key not found: " << id << "\n";
+    return nullptr;
+  }
+
+  return it->second;
 }

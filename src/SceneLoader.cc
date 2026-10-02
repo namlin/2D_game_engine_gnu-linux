@@ -39,11 +39,25 @@ void SceneLoader::load_scene(const std::string& scene_path, sol::state& lua,
     this->load_sprites(renderer, has_sprites.value(), asset_manager);
   }
 
+  // Load Fonts:
+  sol::optional<sol::table> has_fonts = scene["fonts"];
+
+  if (has_fonts.has_value()) {
+    this->load_fonts(has_fonts.value(), asset_manager);
+  }
+
   // Load Keys:
   sol::optional<sol::table> has_keys = scene["keys"];
 
   if (has_keys.has_value()) {
     this->load_keys(has_keys.value(), controller_manager);
+  }
+
+  // Load Buttons:
+  sol::optional<sol::table> has_buttons = scene["buttons"];
+
+  if (has_buttons.has_value()) {
+    this->load_buttons(has_buttons.value(), controller_manager);
   }
 
   // Load Entities:
@@ -182,6 +196,21 @@ void SceneLoader::load_entities(sol::state& lua, const sol::table& entities, Reg
       );
     }
 
+    // TextComponent:
+    sol::optional<sol::table> has_text = components["text"];
+
+    if (has_text.has_value()) {
+      sol::table text_tbl = has_text.value();
+      new_entity.add_component<TextComponent>(
+        text_tbl["text"].get_or(std::string("")),
+        text_tbl["id"].get_or(std::string("")),
+        text_tbl["r"].get_or(uint8_t{0}),
+        text_tbl["g"].get_or(uint8_t{0}),
+        text_tbl["b"].get_or(uint8_t{0}),
+        text_tbl["a"].get_or(uint8_t{255})
+      );
+    }
+
     // TransformComponent:
     sol::optional<sol::table> has_transform = components["transform"];
 
@@ -211,6 +240,38 @@ void SceneLoader::load_entities(sol::state& lua, const sol::table& entities, Reg
         glm::vec2(sx, sy),
         transform["rotation"].get_or(0.0f)
       );
+    }
+  }
+}
+
+void SceneLoader::load_fonts(const sol::table& fonts, AssetManager& asset_manager) {
+  for (const auto& pair : fonts) {
+    if (pair.second.is<sol::table>()) {
+      sol::table font = pair.second.as<sol::table>();
+
+      std::string id = font["id"].get_or(std::string(""));
+      std::string file_path = font["file_path"].get_or(std::string(""));
+      size_t size = font["size"].get_or(size_t{0});
+
+      if (!id.empty() && !file_path.empty() && size > 0) {
+        asset_manager.add_font(id, file_path, size);
+      }
+    }
+  }
+}
+
+void SceneLoader::load_buttons(const sol::table& buttons,
+                               ControllerManager& controller_manager) {
+  for (const auto& pair : buttons) {
+    if (pair.second.is<sol::table>()) {
+      sol::table button = pair.second.as<sol::table>();
+
+      std::string name = button["name"].get_or(std::string(""));
+      uint8_t code = button["code"].get_or(uint8_t{0});
+
+      if (!name.empty()) {
+        controller_manager.add_mouse_button(name, code);
+      }
     }
   }
 }

@@ -5,7 +5,10 @@ scene = {
     {id = "enemy_1", file_path = "./assets/enemy_1.png"}
   },
 
-  -- TODO: Fonts Table.
+  -- Fonts Table:
+  fonts = {
+    {id = "FONT TEST SIZE 24", file_path = "./assets/fonts/valu_old_caps.ttf", size = 24}
+  },
 
   -- Actions and Keys Table (renamed to 'keys' to match C++):
   keys = {
@@ -15,7 +18,10 @@ scene = {
     {name = "Move Right", key = 100}
   },
 
-  -- TODO: Actions and Mouse Buttons Table.
+  -- Actions and Mouse Buttons Table:
+  buttons = {
+    {name = "mouse_left_button", code = 1}
+  },
 
   -- Entities Table:
   entities = {
@@ -49,6 +55,25 @@ scene = {
           position = {x = 400, y = 300},
           scale = {x = 2.0, y = 2.0},
           rotation = 0.0
+        }
+      }
+    },
+    {
+      -- Entity 2 - Font:
+      components = {
+        text = {
+          text = "Score: 69",
+          id = "FONT TEST SIZE 24",
+          r = 150,
+          g = 0,
+          b = 150,
+          a = 255
+        },
+
+        transform = {
+          position = {x = 500.0, y = 50.0},
+          scale = {x = 1.0, y = 1.0},
+          rotation = 0.0,
         }
       }
     }
