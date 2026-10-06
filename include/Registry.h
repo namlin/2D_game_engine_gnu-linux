@@ -19,6 +19,16 @@
 class System;
 
 class Registry {
+ private:
+  size_t total_entities = 0;
+  std::vector<IPool*> entries;
+  std::vector<std::bitset<MAX_COMPONENTS>> entity_component_signatures;
+  std::unordered_map<std::type_index, System*> systems;
+  std::deque<size_t> free_IDs;
+
+  std::set<Entity> entities_to_add;
+  std::set<Entity> entities_to_remove;
+
  public:
   Registry(void);
   ~Registry(void);
@@ -58,15 +68,8 @@ class Registry {
   void add_entity_to_systems(Entity entity);
   void remove_entity_from_systems(Entity entity);
 
- private:
-  size_t total_entities = 0;
-  std::vector<IPool*> entries;
-  std::vector<std::bitset<MAX_COMPONENTS>> entity_component_signatures;
-  std::unordered_map<std::type_index, System*> systems;
-  std::deque<size_t> free_IDs;
-
-  std::set<Entity> entities_to_add;
-  std::set<Entity> entities_to_remove;
+  // Reset registry:
+  void clear_entities(void);
 };
 
 template <typename TComponent, typename... TArgs>

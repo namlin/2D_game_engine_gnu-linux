@@ -84,4 +84,10 @@ void Registry::update(void) {
   this->entities_to_remove.clear();
 }
 
-// void Registry::add_system(Entity) {}
+void Registry::clear_entities(void) {
+  for (size_t i = 0; i < this->total_entities; i++) {
+    this->remove_entity_from_systems(Entity(i));
+    this->entity_component_signatures[i].reset();
+    this->free_IDs.push_back(i);
+  }
+}

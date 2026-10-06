@@ -14,6 +14,7 @@
 #include "../include/AssetManager.h"
 #include "../include/ControllerManager.h"
 #include "../include/EventManager.h"
+#include "../include/SceneManager.h"
 
 // ECS:
 #include "../include/Component.h"
@@ -21,6 +22,7 @@
 #include "../include/Registry.h"
 #include "../include/System.h"
 
+/*
 // Components:
 #include "../include/AnimationComponent.h"
 #include "../include/CircleColliderComponent.h"
@@ -29,6 +31,7 @@
 #include "../include/SpriteComponent.h"
 #include "../include/TextComponent.h"
 #include "../include/TransformComponent.h"
+*/
 
 // Systems:
 #include "../include/AnimationSystem.h"
@@ -43,11 +46,10 @@
 // Events:
 #include "../include/ClickEvent.h"
 
-// Other:
-#include "../include/SceneLoader.h"
-
 const uint8_t FPS = 30;
 const uint16_t MILLISECS_PER_FRAME = 1000 / FPS;
+
+class SceneManager;  // Forward declaration.
 
 class Game {
  private:
@@ -55,26 +57,14 @@ class Game {
   inline static Game* instance;
 
   SDL_Window* window = nullptr;
-  // uint16_t window_width = 256;
-  // uint16_t window_height = 192;
-  uint16_t window_width = 800;
-  uint16_t window_height = 800;
+  uint16_t window_width = 800;  // 256
+  uint16_t window_height = 800;  // 192
   const char* window_title = "2D Game Engine";
 
   uint16_t millisecs_previous_frame = 0;
 
-  SDL_Renderer* renderer = nullptr;
   SDL_Rect rect_1;
   bool is_running = false;
-
-  AssetManager* asset_manager = nullptr;
-  EventManager* event_manager = nullptr;
-
-  Registry* registry = nullptr;
-
-  sol::state lua;
-
-  SceneLoader* scene_loader = nullptr;
 
   // --- Singleton Encapsulation ---
   Game(void);
@@ -88,9 +78,19 @@ class Game {
   void process_input(void);
   void update(void);
   void render(void);
+  void run_scene(void);
 
  public:
+  Registry* registry = nullptr;
+
+  AssetManager* asset_manager = nullptr;
+  EventManager* event_manager = nullptr;
   ControllerManager* controller_manager = nullptr;
+  SceneManager* scene_manager = nullptr;
+
+  SDL_Renderer* renderer = nullptr;
+
+  sol::state lua;
 
   static Game* get_instance(void);
 

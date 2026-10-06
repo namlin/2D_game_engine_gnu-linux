@@ -24,17 +24,17 @@ Game::Game(void) {
     std::exit(EXIT_FAILURE);
   }
 
+  this->scene_manager = new SceneManager();
+
+  if (this->scene_manager == nullptr) {
+    std::cerr << "[GAME] ERROR: No dynamic memory was allocated for the scene_manager pointer.\n";
+    std::exit(EXIT_FAILURE);
+  }
+
   this->registry = new Registry();
 
   if (this->registry == nullptr) {
     std::cerr << "[GAME] ERROR: No dynamic memory was allocated for the registry pointer.\n";
-    std::exit(EXIT_FAILURE);
-  }
-
-  this->scene_loader = new SceneLoader();
-
-  if (this->scene_loader == nullptr) {
-    std::cerr << "[GAME] ERROR: No dynamic memory was allocated for the scene_loader pointer.\n";
     std::exit(EXIT_FAILURE);
   }
 }
@@ -45,8 +45,9 @@ Game::~Game(void) {
   delete this->asset_manager;
   delete this->controller_manager;
   delete this->event_manager;
+  delete this->scene_manager;
+
   delete this->registry;
-  delete this->scene_loader;
 }
 
 Game* Game::get_instance(void) {
@@ -114,64 +115,10 @@ void Game::setup(void) {
   this->registry->add_system<ScriptSystem>();
   this->registry->add_system<UISystem>();
 
+  this->scene_manager->load_scene_from_script("./assets/lua_scripts/scenes.lua", this->lua);
+
   this->lua.open_libraries(sol::lib::base, sol::lib::math);
   this->registry->get_system<ScriptSystem>().create_lua_binding(this->lua);
-
-  this->scene_loader->load_scene("./assets/lua_scripts/scene_01.lua", this->lua,
-                                 *this->asset_manager, *this->controller_manager,
-                                 *this->registry, this->renderer);
-
-  /*
-  this->asset_manager->add_font("FONT TEST SIZE 24", "./assets/fonts/valu_old_caps.ttf", 24);  // TEST
-  Entity text_entity = this->registry->create_entity();
-  text_entity.add_component<TextComponent>("Score: 69", "FONT TEST SIZE 24", 150, 0, 150, 255);
-  text_entity.add_component<TransformComponent>(glm::vec2(500.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
-  */
-
-  /*
-  // Map keys:
-
-  // Use the SDL keycodes.
-  this->controller_manager->add_action_key("Move Up", SDLK_w);
-  this->controller_manager->add_action_key("Move Down", SDLK_s);
-  this->controller_manager->add_action_key("Move Left", SDLK_a);
-  this->controller_manager->add_action_key("Move Right", SDLK_d);
-
-  // Register assets:
-  this->asset_manager->add_texture(this->renderer, "Player", "./assets/Player.png");
-  this->asset_manager->add_texture(this->renderer, "enemy_1", "./assets/enemy_1.png");
-  this->asset_manager->add_texture(this->renderer, "enemy_2", "./assets/enemy_1.png");
-
-  // ---Create entities---
-
-  // Player:
-  Entity player = this->registry->create_entity();
-  this->lua.script_file("./assets/lua_scripts/player.lua");
-
-  // player.add_component<AnimationComponent>(1, 10, true);
-  player.add_component<CircleColliderComponent>(8, 16, 16);
-  player.add_component<RigidBodyComponent>(glm::vec2(0, 0));
-  // player.add_component<ScriptComponent>(lua["update"]);
-  player.add_component<ScriptComponent>(sol::function(lua["update"]));
-  player.add_component<SpriteComponent>("Player", 16, 16, 0, 0);
-  player.add_component<TransformComponent>(glm::vec2(400.0, 300.0), glm::vec2(2.0, 2.0), 0.0);
-
-  // Enemy 1:
-  Entity enemy_1 = this->registry->create_entity();
-  enemy_1.add_component<AnimationComponent>(1, 10, true);
-  enemy_1.add_component<CircleColliderComponent>(8, 16, 16);
-  enemy_1.add_component<RigidBodyComponent>(glm::vec2(50, 0));
-  enemy_1.add_component<SpriteComponent>("enemy_1", 16, 16, 0, 0);
-  enemy_1.add_component<TransformComponent>(glm::vec2(200.0, 100.0), glm::vec2(2.0, 2.0), 0.0);
-
-  // Enemy 2:
-  Entity enemy_2 = this->registry->create_entity();
-  enemy_2.add_component<AnimationComponent>(1, 10, true);
-  enemy_2.add_component<CircleColliderComponent>(8, 16, 16);
-  enemy_2.add_component<RigidBodyComponent>(glm::vec2(-50, 0));
-  enemy_2.add_component<SpriteComponent>("enemy_2", 16, 16, 0, 0);
-  enemy_2.add_component<TransformComponent>(glm::vec2(600.0, 100.0), glm::vec2(2.0, 2.0), 0.0);
-  */
 }
 
 void Game::process_input(void) {
@@ -185,6 +132,7 @@ void Game::process_input(void) {
 
       case SDL_KEYDOWN:
         if (SDL_event.key.keysym.sym == SDLK_ESCAPE) {
+          this->scene_manager->stop_scene();
           this->is_running = false;
           break;
         }
@@ -265,11 +213,23 @@ void Game::render(void) {
   SDL_RenderPresent(this->renderer);  // Swap the drawing matrix.
 }
 
-void Game::run(void) {
-  while (this->is_running) {
+void Game::run_scene(void) {
+  this->scene_manager->load_scene();
+
+  while (scene_manager->get_is_scene_running()) {
     this->process_input();
     this->update();
     this->render();
+  }
+
+  this->asset_manager->clear_assets();
+  this->registry->clear_entities();
+}
+
+void Game::run(void) {
+  while (this->is_running) {
+    this->scene_manager->start_scene();
+    this->run_scene();
   }
 }
 
