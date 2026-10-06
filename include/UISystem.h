@@ -41,10 +41,15 @@ class UISystem : public System {
       if (transform.position.x < click_event.x_position
           && click_event.x_position < transform.position.x + text.width
           && transform.position.y < click_event.y_position
-          && click_event.y_position < transform.position.y + text.height
-          // TODO: execute the 'on_click' function of ScriptComponent.
-      ) {
-        std::cout << "Click over entity: "  << entity.get_id() << ".\n";  // TEST
+          && click_event.y_position < transform.position.y + text.height) {
+
+        if (entity.has_component<ScriptComponent>()) {
+          const auto& script = entity.get_component<ScriptComponent>();
+
+          if (script.on_click != sol::nil) {
+            script.on_click();
+          }
+        }
       }
     }
   }

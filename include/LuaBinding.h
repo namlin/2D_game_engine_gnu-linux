@@ -14,4 +14,7 @@ bool is_action_activated(const std::string& action);
 // Rigid Body Component:
 void set_velocity(Entity entity, float x, float y);
 
+// Scenes:
+void go_to_scene(const std::string name);
+
 #endif  // LUABINDING_H

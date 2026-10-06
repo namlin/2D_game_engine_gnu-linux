@@ -159,6 +159,7 @@ void SceneLoader::load_entities(sol::state& lua, const sol::table& entities, Reg
 
     if (has_script.has_value()) {
       sol::table script_tbl = has_script.value();
+      lua["on_click"] = sol::nil;
       lua["update"] = sol::nil;
 
       std::string path = script_tbl["path"].get_or(std::string(""));
@@ -171,12 +172,15 @@ void SceneLoader::load_entities(sol::state& lua, const sol::table& entities, Reg
           sol::optional<sol::function> has_update = lua["update"];
           sol::function update = has_update.value_or(sol::nil);
 
-          new_entity.add_component<ScriptComponent>(update);
+          sol::optional<sol::function> has_on_click = lua["on_click"];
+          sol::function on_click = has_on_click.value_or(sol::nil);
+
+          new_entity.add_component<ScriptComponent>(update, on_click);
         }
 
         else {
           sol::error err = script_res;
-          std::cerr << "[SceneLoader] Could not load script " << path << ": " << err.what() << "\n";
+          std::cerr << "[SceneLoader] ERROR: Could not load script " << path << ": " << err.what() << "\n";
         }
       }
     }

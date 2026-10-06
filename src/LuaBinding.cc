@@ -10,3 +10,8 @@ void set_velocity(Entity entity, float x, float y) {
   rigid_body.velocity.x = x;
   rigid_body.velocity.y = y;
 }
+
+void go_to_scene(const std::string name) {
+  Game::get_instance()->scene_manager->set_next_scene(name);
+  Game::get_instance()->scene_manager->stop_scene();
+}
